@@ -1,64 +1,82 @@
-# linux-yocto-custom.bb:
-#
-#   An example kernel recipe that uses the linux-yocto and oe-core
-#   kernel classes to apply a subset of yocto kernel management to git
-#   managed kernel repositories.
-#
-#   To use linux-yocto-custom in your layer, create a
-#   linux-yocto-custom.bbappend file containing at least the following
-#   lines:
-#
-#     FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
-#     COMPATIBLE_MACHINE_yourmachine = "yourmachine"
-#
-#   You must also provide a Linux kernel configuration. The most direct
-#   method is to copy your .config to files/defconfig in your layer,
-#   in the same directory as the bbappend and add file://defconfig to
-#   your SRC_URI.
-#
-#   To use the yocto kernel tooling to generate a BSP configuration
-#   using modular configuration fragments, see the yocto-bsp and
-#   yocto-kernel tools documentation.
-#
-# Warning:
-#
-#   Building this example without providing a defconfig or BSP
-#   configuration will result in build or boot errors. This is not a
-#   bug.
-#
-#
-# Notes:
-#
-#   patches: patches can be merged into to the source git tree itself,
-#            added via the SRC_URI, or controlled via a BSP
-#            configuration.
-#   
-#   example configuration addition:
-#            SRC_URI += "file://smp.cfg"
-#   example patch addition (for kernel v3.4 only):
-#            SRC_URI += "file://0001-linux-version-tweak.patch
-#   example feature addition (for kernel v3.4 only):
-#            SRC_URI += "file://feature.scc"
-#
-
-inherit kernel
 require recipes-kernel/linux/linux-yocto.inc
+FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
 # Override SRC_URI in a bbappend file to point at a different source
 # tree if you do not want to build from Linus' tree.
-SRC_URI = "git://github.com/strassek/linux;protocol=git;nocheckout=1"
 
-LINUX_VERSION ?= "3.8"
-LINUX_VERSION_EXTENSION ?= "-rc5"
 
 # Override SRCREV to point to a different commit in a bbappend file to
 # build a different release of the Linux kernel.
 # tag: v3.4 76e10d158efb6d4516018846f60c2ab5501900bc
-SRCREV="6cb2afd7c0abb93bd9dc6d36b858b1e312e2407d"
 
-PR = "r1"
+SRC_URI = "git:///home/strassek/repos/linux.git;protocol=file;nocheckout=1;branch=iio"
+
+FS_SRC_URI = "\
+    file://devtmpfs.cfg \
+    file://debugfs.cfg \
+    file://btrfs.cfg \
+    file://ext2.cfg \
+    file://ext3.cfg \
+    file://ext4.cfg"
+
+NET_SRC_URI = "\
+    file://ipsec.cfg \
+    file://ipv6.cfg \
+    file://ipsec6.cfg \
+    file://ip_nf.cfg \
+    file://ip6_nf.cfg \
+    file://bridge.cfg"
+    
+STD_SRC_URI = "\
+    file://base.cfg \
+    file://standard.cfg \
+    ${FS_SRC_URI} \
+    ${NET_SRC_URI}"
+
+FRI2_STD_SRC_URI = "\
+    ${STD_SRC_URI} \
+    file://fri2.cfg \
+    file://efi.cfg \
+    file://smp.cfg \
+    file://hpet.cfg \
+    file://no_hz.cfg \
+    file://hz_1000.cfg \
+    file://x86.cfg \
+    file://eg20t.cfg \
+    file://dmaengine.cfg \
+    file://f5521gw.cfg \
+    file://usb-net.cfg \
+    file://intel.cfg \
+    file://usb-base.cfg \
+    file://ehci-hcd.cfg \
+    file://ohci-hcd.cfg \
+    file://iwlwifi.cfg \
+    file://mac80211.cfg \
+    file://efi-ext.cfg \
+    file://scsi.cfg \
+    file://disk.cfg \
+    file://usb-mass-storage.cfg \
+    file://boot-live.cfg \
+    file://latencytop.cfg \
+    file://profiling.cfg"
+
+SRC_URI += "\
+    ${FRI2_STD_SRC_URI}"
+
+SRCREV ?= "09a642b78523e9f4c5970c806ad218aa3de31551"
+LINUX_VERSION ?= "3.8"
+LINUX_VERSION_EXTENSION ?= "-rc5"
+
+PR = "${INC_PR}.0"
 PV = "${LINUX_VERSION}+git${SRCPV}"
 
 # Override COMPATIBLE_MACHINE to include your machine in a bbappend
 # file. Leaving it empty here ensures an early explicit build failure.
-COMPATIBLE_MACHINE = "fri2-noemgd-accel"
+COMPATIBLE_MACHINE_fri2-noemgd-accel = "fri2-noemgd-accel"
+
+# Functionality flags
+#KERNEL_REVISION_CHECKING=""
+#KERNEL_FEATURES_append = " features/netfilter"
+#KERNEL_FEATURES_append = " ${@bb.utils.contains("TUNE_FEATURES", "mx32", " cfg/x32", "" ,d)}"
+
+module_autoload_iwlwifi = "iwlwifi"
