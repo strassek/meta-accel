@@ -11,6 +11,13 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
 SRC_URI = "git:///home/strassek/repos/linux.git;protocol=file;nocheckout=1;branch=iio"
 
+EXTRA_SRC_URI = "\
+    file://gpiolib.cfg \
+    file://mfd.cfg \
+    file://st_accel.cfg \
+    file://i2c_hacking.cfg \
+    file://fri2_platform.cfg"
+
 FS_SRC_URI = "\
     file://devtmpfs.cfg \
     file://debugfs.cfg \
@@ -26,7 +33,7 @@ NET_SRC_URI = "\
     file://ip_nf.cfg \
     file://ip6_nf.cfg \
     file://bridge.cfg"
-    
+ 
 STD_SRC_URI = "\
     file://base.cfg \
     file://standard.cfg \
@@ -61,9 +68,10 @@ FRI2_STD_SRC_URI = "\
     file://profiling.cfg"
 
 SRC_URI += "\
-    ${FRI2_STD_SRC_URI}"
+    ${FRI2_STD_SRC_URI} \
+    ${EXTRA_SRC_URI}"
 
-SRCREV ?= "09a642b78523e9f4c5970c806ad218aa3de31551"
+SRCREV ?= "${AUTOREV}"
 LINUX_VERSION ?= "3.8"
 LINUX_VERSION_EXTENSION ?= "-rc5"
 

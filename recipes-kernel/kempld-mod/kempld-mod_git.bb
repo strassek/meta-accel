@@ -6,7 +6,7 @@ inherit module
 
 PR = "r0"
 
-SRC_URI = "git://github.com/strassek/kempld.git;branch=master;protocol=git"
+SRC_URI = "git:///home/strassek/repos/kempld.git;branch=master;protocol=file"
 SRCREV = "${AUTOREV}"
 
 S = "${WORKDIR}/git"
