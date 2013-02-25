@@ -13,10 +13,11 @@ SRC_URI = "git:///home/strassek/repos/linux.git;protocol=file;nocheckout=1;branc
 
 EXTRA_SRC_URI = "\
     file://gpiolib.cfg \
-    file://mfd.cfg \
     file://st_accel.cfg \
     file://i2c_hacking.cfg \
-    file://fri2_platform.cfg"
+    file://fri2_platform.cfg \
+    file://kempld.cfg \
+    file://pca953x.cfg"
 
 FS_SRC_URI = "\
     file://devtmpfs.cfg \
