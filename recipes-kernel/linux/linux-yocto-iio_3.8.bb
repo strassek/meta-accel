@@ -9,7 +9,7 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 # build a different release of the Linux kernel.
 # tag: v3.4 76e10d158efb6d4516018846f60c2ab5501900bc
 
-SRC_URI = "git:///home/strassek/repos/linux.git;protocol=file;nocheckout=1;branch=iio"
+SRC_URI = "git:///home/strassek/repos/linux.git;protocol=file;nocheckout=1;branch=master"
 
 EXTRA_SRC_URI = "\
     file://gpiolib.cfg \
